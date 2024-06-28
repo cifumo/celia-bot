@@ -39,7 +39,13 @@ export default {
         },
       ];
 
-      return conn.sendListM(m.chat, body, wm, sections, "", m);
+      return conn.sendListM(m.chat, body, wm, sections, global.thumbnail, m, {
+                    mentionedJid: [m.sender],
+                    forwardedNewsletterMessageInfo: {
+                            newsletterName: global.name,
+                            newsletterJid: "120363298369543523@newsletter",
+                        },
+                });
     } else {
       let body = `Commands in the ${selectedCategory} category:\n\n`;
 
@@ -63,14 +69,31 @@ export default {
       }
 
       commandsInCategory.forEach((cmd) => {
-        body += `• ${cmd.name}: ${cmd.description || "No description"}\n`;
+        body += `❒ *${cmd.name}:*\n↳『${cmd.description || "No description"}』\n------------------------------------\n`;
       });
 
       if (commandsInCategory.length === 0) {
         body = `No commands found in the ${selectedCategory} category.`;
       }
 
-      return conn.sendMessage(m.chat, { text: body }, { quoted: m });
+      return conn.sendMessage(m.chat, { text: body,
+        	    contextInfo: {
+                    mentionedJid: [m.sender],
+                    forwardedNewsletterMessageInfo: {
+                            newsletterName: global.name,
+                            newsletterJid: "120363298369543523@newsletter",
+                        },
+                    externalAdReply: {
+                        mediaType: 1,
+                        previewType: "pdf",
+                        title: global.name,
+                        body: wm,
+                        thumbnail: thumbnail,
+                        renderLargerThumbnail: true,
+                        sourceUrl: link
+                    }
+                }
+            }, { quoted: m })
     }
   },
 };
